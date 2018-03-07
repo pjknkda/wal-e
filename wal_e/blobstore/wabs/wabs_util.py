@@ -66,8 +66,8 @@ def uri_put_file(creds, uri, fp, content_type=None):
     conn = BlockBlobService(creds.account_name, creds.account_key,
                             sas_token=creds.access_token, protocol='https')
 
-    conn.create_blob_from_stream(url_tup.netloc, url_tup.path.lstrip('/'),
-                                 fp, **kwargs)
+    conn.create_blob_from_stream(url_tup.netloc, url_tup.path.lstrip('/'), fp,
+                                 max_connections=1, **kwargs)
 
     # To maintain consistency with the S3 version of this function we must
     # return an object with a certain set of attributes.  Currently, that set
@@ -83,7 +83,8 @@ def uri_get_file(creds, uri, conn=None):
         conn = BlockBlobService(creds.account_name, creds.account_key,
                                 sas_token=creds.access_token, protocol='https')
 
-    blob = conn.get_blob_to_bytes(url_tup.netloc, url_tup.path.lstrip('/'))
+    blob = conn.get_blob_to_bytes(url_tup.netloc, url_tup.path.lstrip('/'),
+                                  max_connections=1)
 
     return blob.content
 
